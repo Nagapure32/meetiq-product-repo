@@ -68,9 +68,10 @@ def test_create_uploaded_recording_creates_meeting_job_and_segments(monkeypatch)
     async def fake_store_uploaded_file(upload_id, user_id, file):
         content = await file.read()
         blob_uploads.append((upload_id, user_id, file.filename, file.content_type, content))
+        blob_name = f"uploaded-media/{user_id}/{upload_id}-client-sync.mp3"
         return uploaded_recordings.StoredUpload(
-            blob_name=f"uploaded-media/{user_id}/{upload_id}-client-sync.mp3",
-            blob_url=f"https://storage.example/meeting-transcripts/uploaded-media/{user_id}/{upload_id}-client-sync.mp3",
+            blob_name=blob_name,
+            blob_url=f"https://storage.example/meeting-transcripts/{blob_name}",
             content=content,
         )
 
@@ -102,7 +103,8 @@ def test_create_uploaded_recording_creates_meeting_job_and_segments(monkeypatch)
     assert result["job"]["status"] == "ready"
     assert fake.tables["meetings"][0]["graph_event_id"].startswith("upload:")
     assert fake.tables["meeting_upload_jobs"][0]["original_filename"] == "client-sync.mp3"
-    assert fake.tables["meeting_upload_jobs"][0]["storage_path"].startswith("uploaded-media/user-1/")
+    storage_path = fake.tables["meeting_upload_jobs"][0]["storage_path"]
+    assert storage_path.startswith("uploaded-media/user-1/")
     assert blob_uploads[0][2:] == ("client-sync.mp3", "audio/mpeg", b"audio-bytes")
     assert [row["text"] for row in fake.tables["transcript_segments"]] == [
         "Send proposal.",
@@ -124,9 +126,10 @@ def test_create_uploaded_recording_without_transcript_transcribes_media(
 
     async def fake_store_uploaded_file(upload_id, user_id, file):
         content = await file.read()
+        blob_name = f"uploaded-media/{user_id}/{upload_id}-client-sync.mp4"
         return uploaded_recordings.StoredUpload(
-            blob_name=f"uploaded-media/{user_id}/{upload_id}-client-sync.mp4",
-            blob_url=f"https://storage.example/meeting-transcripts/uploaded-media/{user_id}/{upload_id}-client-sync.mp4",
+            blob_name=blob_name,
+            blob_url=f"https://storage.example/meeting-transcripts/{blob_name}",
             content=content,
         )
 

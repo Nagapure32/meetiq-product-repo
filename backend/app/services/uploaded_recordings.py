@@ -285,7 +285,9 @@ def _upload_media_to_azure_blob(blob_name: str, content: bytes, content_type: st
         blob_client.upload_blob(
             content,
             overwrite=True,
-            content_settings=ContentSettings(content_type=content_type or "application/octet-stream"),
+            content_settings=ContentSettings(
+                content_type=content_type or "application/octet-stream",
+            ),
         )
     except AzureError as exc:
         raise HTTPException(
