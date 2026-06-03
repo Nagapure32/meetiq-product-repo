@@ -21,9 +21,16 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v5
+      - name: Prepare backend deployment package
+        shell: bash
+        run: |
+          rm -rf backend-deploy
+          mkdir -p backend-deploy
+          cp -R backend/app backend-deploy/app
+          cp backend/requirements.txt backend-deploy/requirements.txt
       - name: Deploy backend
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_BACKEND_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: backend
+          package: backend-deploy

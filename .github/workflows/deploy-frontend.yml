@@ -37,9 +37,15 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: npm run build
+      - name: Prepare standalone package
+        shell: bash
+        run: |
+          cp -R frontend/public frontend/.next/standalone/public
+          mkdir -p frontend/.next/standalone/.next
+          cp -R frontend/.next/static frontend/.next/standalone/.next/static
       - name: Deploy frontend
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
-          package: frontend
+          package: frontend/.next/standalone
