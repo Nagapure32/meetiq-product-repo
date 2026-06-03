@@ -4,6 +4,12 @@ import { type NextRequest, NextResponse } from "next/server";
 const publicRoutes = new Set(["/login"]);
 
 export async function proxy(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  if (path.startsWith("/.swa/")) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({
     request,
   });
@@ -36,7 +42,6 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const path = request.nextUrl.pathname;
   const isPublic = publicRoutes.has(path);
 
   if (!user && !isPublic) {
@@ -56,7 +61,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!.swa|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
-
