@@ -208,21 +208,20 @@ def _transcription_response_to_text(data: dict[str, Any]) -> str:
 
     combined_phrases = data.get("combinedPhrases")
     if isinstance(combined_phrases, list):
-        combined_text = " ".join(
-            str(phrase.get("text") or phrase.get("display") or "").strip()
-            for phrase in combined_phrases
-            if isinstance(phrase, dict)
-        ).strip()
+        combined_text = " ".join(_speech_text(phrase) for phrase in combined_phrases).strip()
         if combined_text:
             return combined_text
 
-    text = str(data.get("text") or data.get("display") or "").strip()
+    text = _speech_text(data)
     if text:
         return text
 
     raise HTTPException(
         status_code=status.HTTP_502_BAD_GATEWAY,
-        detail="Azure Speech did not return transcript text.",
+        detail={
+            "message": "Azure Speech did not return transcript text.",
+            "response_keys": sorted(data.keys()),
+        },
     )
 
 
@@ -234,13 +233,32 @@ def _phrase_lines(phrases: Any) -> list[str]:
     for index, phrase in enumerate(phrases, start=1):
         if not isinstance(phrase, dict):
             continue
-        text = str(phrase.get("text") or phrase.get("display") or "").strip()
+        text = _speech_text(phrase)
         if not text:
             continue
         speaker = phrase.get("speaker") or phrase.get("channel")
         speaker_name = f"Speaker {speaker}" if speaker is not None else f"Speaker {index}"
         lines.append(f"{speaker_name}: {text}")
     return lines
+
+
+def _speech_text(value: Any) -> str:
+    if not isinstance(value, dict):
+        return ""
+
+    for key in ("text", "displayText", "display", "lexical", "itn", "maskedITN"):
+        text = str(value.get(key) or "").strip()
+        if text:
+            return text
+
+    nbest = value.get("nBest")
+    if isinstance(nbest, list):
+        for candidate in nbest:
+            text = _speech_text(candidate)
+            if text:
+                return text
+
+    return ""
 
 
 async def _store_uploaded_file(upload_id: str, user_id: str, file: UploadFile) -> StoredUpload:

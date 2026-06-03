@@ -212,6 +212,34 @@ def test_transcription_response_to_text_uses_combined_phrase_fallback():
     assert text == "Review the launch plan."
 
 
+def test_transcription_response_to_text_uses_display_text():
+    from app.services import uploaded_recordings
+
+    text = uploaded_recordings._transcription_response_to_text(
+        {"combinedPhrases": [{"displayText": "Review the launch plan."}]}
+    )
+
+    assert text == "Review the launch plan."
+
+
+def test_transcription_response_to_text_uses_nested_nbest_text():
+    from app.services import uploaded_recordings
+
+    text = uploaded_recordings._transcription_response_to_text(
+        {
+            "phrases": [
+                {"speaker": 1, "nBest": [{"displayText": "Review the launch plan."}]},
+                {"speaker": 2, "nBest": [{"displayText": "Send the client summary."}]},
+            ]
+        }
+    )
+
+    assert text == (
+        "Speaker 1: Review the launch plan.\n"
+        "Speaker 2: Send the client summary."
+    )
+
+
 def test_uploaded_media_blob_name_uses_media_prefix_and_safe_filename(monkeypatch):
     from app.services import uploaded_recordings
 
