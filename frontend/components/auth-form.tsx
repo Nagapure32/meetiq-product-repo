@@ -2,7 +2,7 @@
 
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useId, useState, useTransition } from "react";
+import { type FormEvent, useState, useTransition } from "react";
 import {
   type AuthFieldErrors,
   type AuthMode,
@@ -14,9 +14,15 @@ import { supabaseBrowserClient } from "@/lib/supabase/client";
 
 type AuthAction = "email" | "microsoft" | null;
 
+const emailId = "meetiq-auth-email";
+const passwordId = "meetiq-auth-password";
+const emailErrorId = "meetiq-auth-email-error";
+const passwordErrorId = "meetiq-auth-password-error";
+const messageId = "meetiq-auth-message";
+const genericLoginFailure = "We couldn't sign you in. Check your details and try again.";
+
 export function AuthForm() {
   const router = useRouter();
-  const formId = useId();
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,11 +31,6 @@ export function AuthForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [authAction, setAuthAction] = useState<AuthAction>(null);
   const [isPending, startTransition] = useTransition();
-  const emailId = `${formId}-email`;
-  const passwordId = `${formId}-password`;
-  const emailErrorId = `${formId}-email-error`;
-  const passwordErrorId = `${formId}-password-error`;
-  const messageId = `${formId}-message`;
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,7 +56,7 @@ export function AuthForm() {
               });
 
         if (result.error) {
-          setMessage(mode === "login" ? "Email or password is incorrect." : result.error.message);
+          setMessage(mode === "login" ? genericLoginFailure : result.error.message);
           return;
         }
 
@@ -84,7 +85,7 @@ export function AuthForm() {
         });
 
         if (error) {
-          setMessage(error.message);
+          setMessage(genericLoginFailure);
         }
       } finally {
         setAuthAction(null);
@@ -107,24 +108,33 @@ export function AuthForm() {
   }
 
   return (
-    <div className="mt-6 w-full rounded-[14px] border border-line bg-white p-5 shadow-panel sm:p-6">
+    <div className="mt-6 w-full rounded-[10px] border border-line bg-white p-5 shadow-panel sm:p-6">
+      <div className="mb-4">
+        <p className="text-sm font-semibold text-ink">Sign in with your work account</p>
+        <p className="mt-1 text-xs leading-5 text-muted">
+          Recommended for Microsoft 365 calendar and Teams meeting access.
+        </p>
+      </div>
+
       <button
         type="button"
         onClick={signInWithMicrosoft}
         disabled={isPending}
-        className="flex h-11 w-full items-center justify-center gap-3 rounded-[10px] border border-line bg-white px-4 text-sm font-medium text-ink transition hover:border-brand hover:bg-[#faf9f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-12 w-full items-center justify-center gap-3 rounded-[10px] bg-brand px-4 text-sm font-semibold text-white shadow-panel transition hover:bg-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <MicrosoftMark />
-        {authAction === "microsoft" && isPending ? "Redirecting..." : "Continue with Microsoft"}
+        <span className="min-w-0 truncate">
+          {authAction === "microsoft" && isPending ? "Redirecting..." : "Continue with Microsoft"}
+        </span>
       </button>
 
-      <div className="my-5 flex items-center gap-3">
+      <div className="my-6 flex items-center gap-3">
         <span className="h-px flex-1 bg-line" />
-        <span className="font-mono text-[10px] uppercase text-muted">or continue with email</span>
+        <span className="font-mono text-[10px] uppercase text-muted">email fallback</span>
         <span className="h-px flex-1 bg-line" />
       </div>
 
-      <div className="flex rounded-[10px] bg-[#efefeb] p-1">
+      <div className="flex rounded-[10px] bg-[#f3f2ee] p-1">
         <button
           type="button"
           onClick={() => {
@@ -155,7 +165,7 @@ export function AuthForm() {
         </button>
       </div>
 
-      <form className="mt-6 space-y-4" onSubmit={submit} noValidate>
+      <form className="mt-5 space-y-4" onSubmit={submit} noValidate>
         <label className="block">
           <span className="text-xs font-medium text-ink">Email address</span>
           <input
@@ -171,7 +181,7 @@ export function AuthForm() {
             }}
             aria-invalid={Boolean(fieldErrors.email)}
             aria-describedby={fieldErrors.email ? emailErrorId : undefined}
-            className="mt-2 h-10 w-full rounded-[10px] border border-line bg-[#faf9f5] px-3 text-sm text-ink outline-none transition placeholder:text-[#a8a8a3] focus:border-brand focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,53,176,0.14)]"
+            className="mt-2 h-10 w-full rounded-[10px] border border-line bg-[#fbfaf7] px-3 text-sm text-ink outline-none transition placeholder:text-[#a8a8a3] focus:border-brand focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,53,176,0.14)]"
             placeholder="you@company.com"
           />
           {fieldErrors.email ? (
@@ -196,7 +206,7 @@ export function AuthForm() {
               }}
               aria-invalid={Boolean(fieldErrors.password)}
               aria-describedby={fieldErrors.password ? passwordErrorId : undefined}
-              className="h-10 w-full rounded-[10px] border border-line bg-[#faf9f5] px-3 pr-11 text-sm text-ink outline-none transition placeholder:text-[#a8a8a3] focus:border-brand focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,53,176,0.14)]"
+              className="h-10 w-full rounded-[10px] border border-line bg-[#fbfaf7] px-3 pr-11 text-sm text-ink outline-none transition placeholder:text-[#a8a8a3] focus:border-brand focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,53,176,0.14)]"
               placeholder={mode === "login" ? "Your password" : "Minimum 6 characters"}
             />
             <button
@@ -230,15 +240,11 @@ export function AuthForm() {
           type="submit"
           disabled={isPending}
           aria-describedby={message ? messageId : undefined}
-          className="h-10 w-full rounded-[10px] bg-brand text-sm font-medium text-white transition hover:bg-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-10 w-full rounded-[10px] border border-line bg-white text-sm font-medium text-ink transition hover:border-brand hover:bg-[#faf9f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {getAuthSubmitLabel(mode, authAction === "email" && isPending)}
         </button>
       </form>
-
-      <p className="mt-4 text-center text-[11px] leading-5 text-muted">
-        Use your Microsoft work account for calendar and Teams meeting access.
-      </p>
     </div>
   );
 }
