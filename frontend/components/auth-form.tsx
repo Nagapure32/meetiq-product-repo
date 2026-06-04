@@ -110,10 +110,7 @@ export function AuthForm() {
   return (
     <div className="mt-6 w-full rounded-[10px] border border-line bg-white p-5 shadow-panel sm:p-6">
       <div className="mb-4">
-        <p className="text-sm font-semibold text-ink">Sign in with your work account</p>
-        <p className="mt-1 text-xs leading-5 text-muted">
-          Recommended for Microsoft 365 calendar and Teams meeting access.
-        </p>
+        <p className="text-sm font-semibold text-ink">Work account</p>
       </div>
 
       <button
@@ -128,9 +125,9 @@ export function AuthForm() {
         </span>
       </button>
 
-      <div className="my-6 flex items-center gap-3">
+      <div className="my-5 flex items-center gap-3">
         <span className="h-px flex-1 bg-line" />
-        <span className="font-mono text-[10px] uppercase text-muted">email fallback</span>
+        <span className="font-mono text-[10px] uppercase text-muted">email</span>
         <span className="h-px flex-1 bg-line" />
       </div>
 

@@ -6,16 +6,17 @@ Redesign the Aress MeetIQ login page so it feels polished, enterprise-ready, and
 
 ## Approved Direction
 
-Use option A for layout and option C for behavior:
+Use option A for layout and option C for behavior, revised after visual review to be lighter and more sophisticated:
 
 - Desktop layout: restrained split page with the auth panel on the left and a compact product preview on the right.
 - Mobile layout: auth panel first, with only compact reassurance/security cues below it.
 - Primary behavior: Microsoft work-account sign-in is the dominant action.
 - Secondary behavior: email/password remains available as a quieter fallback for existing users.
+- Visual density: keep the split layout but remove bulky dashboard cards, repeated metrics, and hard color blocks.
 
 ## Visual System
 
-The redesign must reuse the existing product language: off-white shell background, white panels, compact typography, 8-10px radii, `#3d35b0` brand accents, muted gray text, and light panel shadows. The page must not become a marketing landing page. It should feel like the entry point to a work-focused meeting productivity dashboard.
+The redesign must reuse the existing product language: off-white shell background, white panels, compact typography, 8-10px radii, muted gray text, and light panel shadows. Use `#3d35b0` only for the primary action and tiny accents. The page must not become a marketing landing page. It should feel like a calm, sophisticated entry point to a work-focused meeting productivity dashboard.
 
 ## Page Layout
 
@@ -26,12 +27,12 @@ Desktop uses a two-column grid:
 - Left column: workspace access copy, auth form, and a compact reassurance strip.
 - Right column: product preview panel showing meeting intelligence output.
 
-The product preview panel shows:
+The right-side panel is intentionally minimal. It shows:
 
-- Today's meetings with status chips such as `Summary ready`, `Action items`, and `Follow-up drafted`.
-- A featured decision/insight card.
-- A short action-items list with owners.
-- A security footer strip: `SSO ready`, `Encrypted transcripts`, `Admin-controlled sharing`.
+- One short product statement.
+- One small meeting-insight card.
+- Two or three subtle trust points.
+- No dense dashboard mockup, no metric grid, and no repeated security chips.
 
 Mobile stacks content with the full product preview hidden or reduced so sign-in remains the first task.
 

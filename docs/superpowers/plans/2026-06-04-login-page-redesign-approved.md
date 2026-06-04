@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Redesign the Aress MeetIQ login page with a split product-preview layout and Microsoft work-account sign-in as the dominant action.
+**Goal:** Redesign the Aress MeetIQ login page with a minimal, sophisticated split layout and Microsoft work-account sign-in as the dominant action.
 
 **Architecture:** Keep page composition in `frontend/app/login/page.tsx`, authentication behavior in `frontend/components/auth-form.tsx`, and pure UI helpers in `frontend/lib/auth-form-ui.ts`. Preserve existing Supabase auth behavior while improving accessibility, validation, and visual hierarchy.
 
@@ -115,7 +115,7 @@ Use a mobile-first split layout:
 <main className="grid min-h-screen bg-shell lg:grid-cols-[minmax(420px,480px)_minmax(0,1fr)]">
 ```
 
-Left column contains workspace access copy and `<AuthForm />`. Right column contains compact product preview cards for today's meetings, decision captured, action items, and security cues.
+Left column contains workspace access copy and `<AuthForm />`. Right column contains a soft, minimal product statement with one small insight card and subtle trust points. Avoid a dense dashboard preview, metric grid, and repeated chips.
 
 - [ ] **Step 2: Source check**
 
