@@ -14,7 +14,7 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "aress MeetIQ",
+  title: "Aress MeetIQ",
   description: "Meeting intelligence and productivity platform.",
 };
 

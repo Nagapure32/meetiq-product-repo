@@ -46,7 +46,7 @@ export default async function InsightsPage() {
       <div className="h-full p-6">
         <PageHeader
           title="Insights"
-          subtitle="A weekly view of how aress MeetIQ is helping you stay on top of meetings and follow-ups."
+          subtitle="A weekly view of how Aress MeetIQ is helping you stay on top of meetings and follow-ups."
         />
 
         <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">

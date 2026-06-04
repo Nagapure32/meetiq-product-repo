@@ -7,10 +7,10 @@ export default function LoginPage() {
         <div className="flex items-center gap-3">
           <img
             src="/aress_software_logo.png"
-            alt="Aress logo"
-            className="size-16 rounded-[10px] bg-white object-contain p-1.5"
+            alt="Aress MeetIQ logo"
+            className="size-20 rounded-[12px] bg-white object-contain p-2"
           />
-          <span className="text-lg font-semibold">aress MeetIQ</span>
+          <span className="text-xl font-semibold">Aress MeetIQ</span>
         </div>
         <div className="max-w-[620px]">
           <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-white/50">Meeting intelligence</p>
@@ -18,11 +18,11 @@ export default function LoginPage() {
             Turn Teams meetings into searchable decisions, tasks, and follow-ups.
           </h1>
           <p className="mt-5 max-w-[520px] text-sm leading-6 text-white/70">
-            Connect your Microsoft calendar, approve bot joins, and let aress MeetIQ organize transcripts,
+            Connect your Microsoft calendar, approve bot joins, and let Aress MeetIQ organize transcripts,
             summaries, and action items.
           </p>
         </div>
-        <p className="font-mono text-[11px] text-white/40">aress MeetIQ v2.0</p>
+        <p className="font-mono text-[11px] text-white/40">Aress MeetIQ v2.0</p>
       </section>
       <section className="flex items-center justify-center p-8">
         <div>

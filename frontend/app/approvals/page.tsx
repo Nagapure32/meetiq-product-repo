@@ -16,7 +16,7 @@ export default async function ApprovalsPage() {
       <div className="h-full p-6">
         <PageHeader
           title="Approvals"
-          subtitle="Review and decide pending bot join requests from aress MeetIQ."
+          subtitle="Review and decide pending bot join requests from Aress MeetIQ."
         />
         <ApprovalsBoard
           initialApprovals={approvalsResult.items}

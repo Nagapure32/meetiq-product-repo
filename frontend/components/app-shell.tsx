@@ -134,10 +134,10 @@ export function AppShell({
         <div className="flex items-center gap-2">
           <img
             src="/aress_software_logo.png"
-            alt="Aress logo"
-            className="size-12 shrink-0 rounded-[8px] object-contain"
+            alt="Aress MeetIQ logo"
+            className="size-14 shrink-0 rounded-[10px] object-contain"
           />
-          <span className="truncate text-sm font-semibold tracking-[-0.2px] text-ink">aress MeetIQ</span>
+          <span className="truncate text-base font-semibold tracking-[-0.2px] text-ink">Aress MeetIQ</span>
         </div>
 
         <div className="relative mx-auto w-full max-w-[460px]">
@@ -244,10 +244,10 @@ export function AppShell({
               <div className="flex items-center gap-2">
                 <img
                   src="/aress_software_logo.png"
-                  alt="Aress logo"
-                  className="size-12 shrink-0 rounded-[8px] object-contain"
+                  alt="Aress MeetIQ logo"
+                  className="size-14 shrink-0 rounded-[10px] object-contain"
                 />
-                <span className="text-sm font-semibold text-ink">aress MeetIQ</span>
+                <span className="text-base font-semibold text-ink">Aress MeetIQ</span>
               </div>
               <button
                 type="button"

@@ -86,10 +86,10 @@ export default function OnboardingPage() {
           <div className="flex items-center gap-3">
             <img
               src="/aress_software_logo.png"
-              alt="Aress logo"
-              className="size-14 rounded-[10px] bg-white object-contain p-1.5"
+              alt="Aress MeetIQ logo"
+              className="size-16 rounded-[12px] bg-white object-contain p-2"
             />
-            <p className="text-base font-semibold">aress MeetIQ</p>
+            <p className="text-lg font-semibold">Aress MeetIQ</p>
           </div>
           <div className="mt-14 space-y-8 text-sm">
             <Step number="1" label="Create account" done />
@@ -97,14 +97,14 @@ export default function OnboardingPage() {
             <Step number="3" label="Review dashboard" active={status === "enabled"} />
             <Step number="4" label="Join or create team" />
           </div>
-          <p className="mt-64 font-mono text-[11px] text-white/40">aress MeetIQ v2.0</p>
+          <p className="mt-64 font-mono text-[11px] text-white/40">Aress MeetIQ v2.0</p>
         </aside>
         <section className="p-12">
           <h1 className="text-[22px] font-semibold tracking-[-0.4px] text-ink">
             Connect your calendar
           </h1>
           <p className="mt-3 max-w-[520px] text-[13px] leading-5 text-muted">
-            aress MeetIQ uses your Microsoft calendar to detect upcoming Teams meetings and send the bot to join on your behalf.
+            Aress MeetIQ uses your Microsoft calendar to detect upcoming Teams meetings and send the bot to join on your behalf.
           </p>
           <div className="mt-8 rounded-[14px] border border-line bg-white p-5">
             <div className="flex items-center justify-between">
