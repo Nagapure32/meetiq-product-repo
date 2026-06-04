@@ -1,5 +1,5 @@
 agno>=2.6.7
-azure-storage-blob>=12.20.0
+azure-storage-blob>=12.29.0
 fastapi>=0.115.0
 gunicorn>=23.0.0
 httpx>=0.27.0
