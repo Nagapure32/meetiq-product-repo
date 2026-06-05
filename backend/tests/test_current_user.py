@@ -44,6 +44,7 @@ def _client() -> TestClient:
 def test_current_user_uses_dev_user_when_no_bearer_token_and_fallback_enabled(monkeypatch):
     from app.auth import current_user
 
+    monkeypatch.setattr(current_user.settings, "app_env", "development")
     monkeypatch.setattr(current_user.settings, "dev_user_id", "dev-user-id")
     monkeypatch.setattr(current_user.settings, "auth_required", False)
     monkeypatch.setattr(current_user.settings, "allow_dev_user_fallback", True)
@@ -64,6 +65,20 @@ def test_current_user_rejects_missing_token_when_auth_required(monkeypatch):
     monkeypatch.setattr(current_user.settings, "dev_user_id", "dev-user-id")
     monkeypatch.setattr(current_user.settings, "auth_required", True)
     monkeypatch.setattr(current_user.settings, "allow_dev_user_fallback", False)
+
+    response = _client().get("/whoami")
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Authentication is required."
+
+
+def test_current_user_rejects_dev_fallback_outside_development(monkeypatch):
+    from app.auth import current_user
+
+    monkeypatch.setattr(current_user.settings, "app_env", "production")
+    monkeypatch.setattr(current_user.settings, "dev_user_id", "dev-user-id")
+    monkeypatch.setattr(current_user.settings, "auth_required", False)
+    monkeypatch.setattr(current_user.settings, "allow_dev_user_fallback", True)
 
     response = _client().get("/whoami")
 
@@ -112,4 +127,3 @@ def test_current_user_rejects_invalid_signature(monkeypatch):
 
     assert response.status_code == 401
     assert response.json()["detail"] == "Invalid authentication token."
-

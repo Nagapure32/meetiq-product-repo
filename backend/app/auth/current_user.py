@@ -21,7 +21,7 @@ async def get_current_user(authorization: str | None = Header(default=None)) -> 
     if scheme.lower() == "bearer" and token:
         return await _current_user_from_supabase_token(token)
 
-    if settings.allow_dev_user_fallback and not settings.auth_required and settings.dev_user_id:
+    if _can_use_dev_user_fallback():
         return CurrentUser(user_id=settings.dev_user_id, auth_source="dev")
 
     raise HTTPException(
@@ -30,6 +30,14 @@ async def get_current_user(authorization: str | None = Header(default=None)) -> 
     )
 
 require_current_user = Depends(get_current_user)
+
+def _can_use_dev_user_fallback() -> bool:
+    return (
+        settings.app_env.lower() in {"development", "dev", "local", "test"}
+        and settings.allow_dev_user_fallback
+        and not settings.auth_required
+        and bool(settings.dev_user_id)
+    )
 
 async def _current_user_from_supabase_token(token: str) -> CurrentUser:
     try:
