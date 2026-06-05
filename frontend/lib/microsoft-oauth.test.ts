@@ -15,8 +15,12 @@ if (options.redirectTo !== "https://app.example/onboarding") {
   throw new Error("Microsoft OAuth redirectTo should use the provided redirect URL.");
 }
 
-if (options.scopes !== "openid profile email offline_access User.Read") {
-  throw new Error("Microsoft OAuth scopes should include the existing profile and Graph user scopes.");
+if (options.scopes !== "openid profile email User.Read") {
+  throw new Error("Microsoft OAuth scopes should include only the profile and Graph user scopes needed for sign-in.");
+}
+
+if (options.scopes.includes("offline_access")) {
+  throw new Error("Microsoft OAuth should not request offline_access because provider refresh tokens inflate auth cookies.");
 }
 
 if (options.queryParams?.prompt !== "select_account") {

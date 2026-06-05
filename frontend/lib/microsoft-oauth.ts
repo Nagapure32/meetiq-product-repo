@@ -7,7 +7,7 @@ export function buildAuthCallbackUrl(origin: string, nextPath: string) {
 export function microsoftOAuthOptions(redirectTo: string) {
   return {
     redirectTo,
-    scopes: "openid profile email offline_access User.Read",
+    scopes: "openid profile email User.Read",
     queryParams: {
       prompt: "select_account",
     },
