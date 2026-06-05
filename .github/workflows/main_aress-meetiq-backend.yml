@@ -10,6 +10,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,10 +20,10 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python version
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -30,7 +33,7 @@ jobs:
         run: |
           python -m venv antenv
           source antenv/bin/activate
-          pip install -r requirements.txt
+          pip install -r backend/requirements.txt
                 
       # By default, when you enable GitHub CI/CD integration through the Azure portal, the platform automatically sets the SCM_DO_BUILD_DURING_DEPLOYMENT application setting to true. This triggers the use of Oryx, a build engine that handles application compilation and dependency installation (e.g., pip install) directly on the platform during deployment. Hence, we exclude the antenv virtual environment directory from the deployment artifact to reduce the payload size. 
       - name: Upload artifact for deployment jobs
@@ -38,7 +41,8 @@ jobs:
         with:
           name: python-app
           path: |
-            .
+            backend/app
+            backend/requirements.txt
             !antenv/
 
       # 🚫 Opting Out of Oryx Build
