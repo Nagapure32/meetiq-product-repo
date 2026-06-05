@@ -31,3 +31,9 @@ export function getAuthSubmitLabel(mode: AuthMode, isPending: boolean) {
 
   return mode === "login" ? "Signing in..." : "Creating account...";
 }
+
+export function getAuthFailureMessage(mode: AuthMode) {
+  return mode === "login"
+    ? "We couldn't sign you in. Check your details and try again."
+    : "We couldn't create your account. Check your details and try again.";
+}

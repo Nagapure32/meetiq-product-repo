@@ -6,6 +6,7 @@ import { type FormEvent, useState, useTransition } from "react";
 import {
   type AuthFieldErrors,
   type AuthMode,
+  getAuthFailureMessage,
   getAuthSubmitLabel,
   validateAuthFields,
 } from "@/lib/auth-form-ui";
@@ -19,8 +20,6 @@ const passwordId = "meetiq-auth-password";
 const emailErrorId = "meetiq-auth-email-error";
 const passwordErrorId = "meetiq-auth-password-error";
 const messageId = "meetiq-auth-message";
-const genericLoginFailure = "We couldn't sign you in. Check your details and try again.";
-
 export function AuthForm() {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("login");
@@ -56,7 +55,7 @@ export function AuthForm() {
               });
 
         if (result.error) {
-          setMessage(mode === "login" ? genericLoginFailure : result.error.message);
+          setMessage(getAuthFailureMessage(mode));
           return;
         }
 
@@ -85,7 +84,7 @@ export function AuthForm() {
         });
 
         if (error) {
-          setMessage(genericLoginFailure);
+          setMessage(getAuthFailureMessage("login"));
         }
       } finally {
         setAuthAction(null);

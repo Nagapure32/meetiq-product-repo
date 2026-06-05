@@ -1,4 +1,5 @@
 import {
+  getAuthFailureMessage,
   getAuthSubmitLabel,
   validateAuthFields,
 } from "./auth-form-ui.ts";
@@ -29,3 +30,11 @@ assert(
 assert(getAuthSubmitLabel("login", false) === "Log in", "Idle login label should be stable.");
 assert(getAuthSubmitLabel("login", true) === "Signing in...", "Pending login label should be specific.");
 assert(getAuthSubmitLabel("signup", true) === "Creating account...", "Pending signup label should be specific.");
+assert(
+  getAuthFailureMessage("login") === "We couldn't sign you in. Check your details and try again.",
+  "Login failures should use generic copy.",
+);
+assert(
+  getAuthFailureMessage("signup") === "We couldn't create your account. Check your details and try again.",
+  "Signup failures should use generic copy instead of provider errors.",
+);
