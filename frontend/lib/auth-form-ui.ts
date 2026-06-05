@@ -5,6 +5,8 @@ export type AuthFieldErrors = {
   password?: string;
 };
 
+const signupPasswordMessage = "Use at least 8 characters with uppercase, lowercase, and a number.";
+
 export function validateAuthFields(email: string, password: string, mode: AuthMode): AuthFieldErrors {
   const errors: AuthFieldErrors = {};
   const normalizedEmail = email.trim();
@@ -17,11 +19,15 @@ export function validateAuthFields(email: string, password: string, mode: AuthMo
 
   if (!password) {
     errors.password = "Password is required.";
-  } else if (mode === "signup" && password.length < 6) {
-    errors.password = "Use at least 6 characters.";
+  } else if (mode === "signup" && !isValidSignupPassword(password)) {
+    errors.password = signupPasswordMessage;
   }
 
   return errors;
+}
+
+function isValidSignupPassword(password: string) {
+  return password.length >= 8 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /\d/.test(password);
 }
 
 export function getAuthSubmitLabel(mode: AuthMode, isPending: boolean) {

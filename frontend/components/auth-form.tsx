@@ -203,7 +203,7 @@ export function AuthForm() {
               aria-invalid={Boolean(fieldErrors.password)}
               aria-describedby={fieldErrors.password ? passwordErrorId : undefined}
               className="h-10 w-full rounded-[10px] border border-line bg-[#fbfaf7] px-3 pr-11 text-sm text-ink outline-none transition placeholder:text-[#a8a8a3] focus:border-brand focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,53,176,0.14)]"
-              placeholder={mode === "login" ? "Your password" : "Minimum 6 characters"}
+              placeholder={mode === "login" ? "Your password" : "8+ chars, Aa, 0-9"}
             />
             <button
               type="button"

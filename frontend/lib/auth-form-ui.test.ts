@@ -20,12 +20,32 @@ assert(
   "Login password should be required.",
 );
 assert(
-  validateAuthFields("user@example.com", "12345", "signup").password === "Use at least 6 characters.",
-  "Signup password should show minimum length.",
+  validateAuthFields("user@example.com", "Secret1", "signup").password ===
+    "Use at least 8 characters with uppercase, lowercase, and a number.",
+  "Signup password should require at least 8 characters.",
 );
 assert(
-  Object.keys(validateAuthFields("user@example.com", "secret1", "signup")).length === 0,
+  validateAuthFields("user@example.com", "password1", "signup").password ===
+    "Use at least 8 characters with uppercase, lowercase, and a number.",
+  "Signup password should require an uppercase letter.",
+);
+assert(
+  validateAuthFields("user@example.com", "PASSWORD1", "signup").password ===
+    "Use at least 8 characters with uppercase, lowercase, and a number.",
+  "Signup password should require a lowercase letter.",
+);
+assert(
+  validateAuthFields("user@example.com", "Password", "signup").password ===
+    "Use at least 8 characters with uppercase, lowercase, and a number.",
+  "Signup password should require a number.",
+);
+assert(
+  Object.keys(validateAuthFields("user@example.com", "Password1", "signup")).length === 0,
   "Valid signup fields should pass.",
+);
+assert(
+  Object.keys(validateAuthFields("user@example.com", "password", "login")).length === 0,
+  "Login password should not enforce signup complexity rules.",
 );
 assert(getAuthSubmitLabel("login", false) === "Log in", "Idle login label should be stable.");
 assert(getAuthSubmitLabel("login", true) === "Signing in...", "Pending login label should be specific.");
