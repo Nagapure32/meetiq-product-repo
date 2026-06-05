@@ -2,17 +2,16 @@ name: Deploy Backend
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "backend/**"
-      - ".github/workflows/deploy-backend.yml"
 
 permissions:
   contents: read
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+concurrency:
+  group: aress-meetiq-backend-production
+  cancel-in-progress: false
 
 jobs:
   deploy:
