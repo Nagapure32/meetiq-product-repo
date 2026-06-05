@@ -1,20 +1,21 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-
-function safeNextPath(value: string | null) {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/";
-  }
-  return value;
-}
+import { buildAuthRedirectUrl, safeNextPath } from "@/lib/auth-callback";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const nextPath = safeNextPath(requestUrl.searchParams.get("next"));
-  const redirectUrl = request.nextUrl.clone();
-  redirectUrl.pathname = code ? nextPath : "/login";
-  redirectUrl.search = "";
+  const publicSiteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_FRONTEND_BASE_URL ??
+    process.env.FRONTEND_BASE_URL;
+  const redirectUrl = buildAuthRedirectUrl({
+    fallbackOrigin: request.nextUrl.origin,
+    headers: request.headers,
+    nextPath: code ? nextPath : "/login",
+    publicSiteUrl,
+  });
 
   let response = NextResponse.redirect(redirectUrl);
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -39,9 +40,12 @@ export async function GET(request: NextRequest) {
 
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
-    const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    loginUrl.search = "";
+    const loginUrl = buildAuthRedirectUrl({
+      fallbackOrigin: request.nextUrl.origin,
+      headers: request.headers,
+      nextPath: "/login",
+      publicSiteUrl,
+    });
     return NextResponse.redirect(loginUrl);
   }
 
