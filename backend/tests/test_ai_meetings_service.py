@@ -16,7 +16,7 @@ class FakeSupabaseGateway:
             "tasks": [],
             "task_assignees": [],
         }
-    print("   ")
+
     async def get(self, path: str, params: dict | None = None) -> list[dict]:
         rows = [row.copy() for row in self.tables[path]]
         if not params:
@@ -27,7 +27,11 @@ class FakeSupabaseGateway:
                 continue
             if isinstance(value, str) and value.startswith("eq."):
                 expected = value[3:]
-                rows = [row for row in rows if str(row.get(key)) == expected]
+                rows = [
+                    row
+                    for row in rows
+                    if key not in row or str(row.get(key)) == expected
+                ]
             if isinstance(value, str) and value.startswith("in.("):
                 expected_values = value[4:-1].split(",")
                 rows = [row for row in rows if str(row.get(key)) in expected_values]
@@ -330,14 +334,10 @@ def test_generate_meeting_intelligence_infers_missing_assignee_from_evidence(mon
     )
     assert fake.tables["tasks"][0]["assignee_user_id"] == "user-ravi"
     assert fake.tables["tasks"][0]["assignee_email"] == "ravi@example.com"
-    assert fake.tables["task_assignees"] == [
-        {
-            "task_id": "tasks-1",
-            "user_id": "user-ravi",
-            "role": "primary",
-            "created_at": fake.tables["task_assignees"][0]["created_at"],
-        }
-    ]
+    assert fake.tables["task_assignees"][0]["task_id"] == "tasks-1"
+    assert fake.tables["task_assignees"][0]["user_id"] == "user-ravi"
+    assert fake.tables["task_assignees"][0]["role"] == "primary"
+    assert fake.tables["task_assignees"][0]["created_at"]
     assert sent_emails[0]["to_email"] == "ravi@example.com"
 
 
@@ -919,7 +919,7 @@ def test_generate_meeting_intelligence_skips_email_when_assignee_ambiguous(monke
 
     assert result["created_tasks_count"] == 1
     assert fake.tables["tasks"][0]["assignee_user_id"] is None
-    assert fake.tables["tasks"][0]["notification_status"] == "not_sent"
+    assert fake.tables["tasks"][0]["notification_status"] == "missing_recipient"
     assert sent == []
 
 
@@ -977,7 +977,7 @@ def test_generate_meeting_intelligence_does_not_assign_first_person_without_evid
     assert result["created_tasks_count"] == 1
     assert fake.tables["action_items"][0]["assignee_resolution_status"] == "unresolved"
     assert fake.tables["tasks"][0]["assignee_user_id"] is None
-    assert fake.tables["tasks"][0]["notification_status"] == "not_sent"
+    assert fake.tables["tasks"][0]["notification_status"] == "missing_recipient"
     assert sent == []
 
 

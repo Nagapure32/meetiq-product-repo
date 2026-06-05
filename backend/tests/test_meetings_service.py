@@ -104,7 +104,7 @@ def test_list_meeting_transcript_orders_by_sequence_then_timestamps(monkeypatch)
     fake = FakeSupabaseGateway()
     monkeypatch.setattr(meetings, "supabase_gateway", fake)
 
-    run(meetings.list_meeting_transcript("meeting-with-transcript"))
+    run(meetings.list_meeting_transcript("meeting-with-transcript", user_id="user-1"))
 
     path, params = fake.get_calls[-1]
     assert path == "transcript_segments"
