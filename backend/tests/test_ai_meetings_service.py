@@ -16,7 +16,7 @@ class FakeSupabaseGateway:
             "tasks": [],
             "task_assignees": [],
         }
-
+    print("   ")
     async def get(self, path: str, params: dict | None = None) -> list[dict]:
         rows = [row.copy() for row in self.tables[path]]
         if not params:
