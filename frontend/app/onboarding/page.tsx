@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import {
   bootstrapUserWorkspace,
+  completeUserOnboarding,
   getMeetingAssistantSettings,
   updateMeetingAssistantSettings,
 } from "@/lib/api";
@@ -70,6 +71,7 @@ export default function OnboardingPage() {
           ...currentSettings,
           auto_join_enabled: true,
         });
+        await completeUserOnboarding();
         setStatus("enabled");
         setMessage("Calendar assistant enabled for your Microsoft calendar.");
       } catch {

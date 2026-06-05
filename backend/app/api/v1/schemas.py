@@ -47,6 +47,14 @@ class UserBootstrapResponse(BaseModel):
     calendar_connection_status: str
 
 
+class UserOnboardingStatus(BaseModel):
+    user_id: str
+    onboarding_completed: bool
+    onboarding_completed_at: str | None = None
+    calendar_connection_status: str | None = None
+    auto_join_enabled: bool = False
+
+
 class ManualJoinRequest(BaseModel):
     meeting_id: str | None = None
     join_web_url: str | None = None

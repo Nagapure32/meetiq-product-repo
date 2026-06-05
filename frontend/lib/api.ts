@@ -244,6 +244,14 @@ export type UserBootstrapResult = {
   calendar_connection_status: string;
 };
 
+export type UserOnboardingStatus = {
+  user_id: string;
+  onboarding_completed: boolean;
+  onboarding_completed_at?: string | null;
+  calendar_connection_status?: string | null;
+  auto_join_enabled: boolean;
+};
+
 export type TaskStatus = "todo" | "in_progress" | "blocked" | "done";
 export type TaskPriority = "low" | "medium" | "high" | "urgent";
 
@@ -419,6 +427,32 @@ export async function bootstrapUserWorkspace(
   if (!response.ok) {
     const detail = await readErrorDetail(response);
     throw new Error(detail ?? `User bootstrap request failed: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function getUserOnboardingStatus(): Promise<UserOnboardingStatus> {
+  const response = await apiFetch(`${API_BASE_URL}/api/v1/onboarding/status`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const detail = await readErrorDetail(response);
+    throw new Error(detail ?? `User onboarding status request failed: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function completeUserOnboarding(): Promise<UserOnboardingStatus> {
+  const response = await apiFetch(`${API_BASE_URL}/api/v1/onboarding/complete`, {
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    const detail = await readErrorDetail(response);
+    throw new Error(detail ?? `User onboarding completion request failed: ${response.status}`);
   }
 
   return response.json();

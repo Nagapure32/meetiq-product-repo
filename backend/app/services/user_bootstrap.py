@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from app.db.supabase import supabase_gateway
 
 
@@ -56,3 +58,53 @@ async def ensure_user_workspace(
         "user_id": user_id,
         "calendar_connection_status": calendar_status,
     }
+
+
+async def get_onboarding_status(user_id: str) -> dict[str, object]:
+    profile_rows = await supabase_gateway.get(
+        "profiles",
+        params={
+            "select": "id,onboarding_completed_at",
+            "id": f"eq.{user_id}",
+            "limit": "1",
+        },
+    )
+    calendar_rows = await supabase_gateway.get(
+        "calendar_connections",
+        params={
+            "select": "connection_status",
+            "user_id": f"eq.{user_id}",
+            "provider": "eq.microsoft",
+            "limit": "1",
+        },
+    )
+    settings_rows = await supabase_gateway.get(
+        "meeting_settings",
+        params={
+            "select": "auto_join_enabled",
+            "user_id": f"eq.{user_id}",
+            "limit": "1",
+        },
+    )
+
+    onboarding_completed_at = profile_rows[0].get("onboarding_completed_at") if profile_rows else None
+    calendar_connection_status = calendar_rows[0].get("connection_status") if calendar_rows else None
+    auto_join_enabled = bool(settings_rows[0].get("auto_join_enabled")) if settings_rows else False
+
+    return {
+        "user_id": user_id,
+        "onboarding_completed": bool(onboarding_completed_at),
+        "onboarding_completed_at": onboarding_completed_at,
+        "calendar_connection_status": calendar_connection_status,
+        "auto_join_enabled": auto_join_enabled,
+    }
+
+
+async def complete_onboarding(user_id: str) -> dict[str, object]:
+    completed_at = datetime.now(UTC).isoformat().replace("+00:00", "Z")
+    await supabase_gateway.patch(
+        "profiles",
+        {"onboarding_completed_at": completed_at},
+        params={"id": f"eq.{user_id}"},
+    )
+    return await get_onboarding_status(user_id)

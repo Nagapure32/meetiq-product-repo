@@ -3,6 +3,7 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState, useTransition } from "react";
+import { getUserOnboardingStatus } from "@/lib/api";
 import {
   type AuthFieldErrors,
   type AuthMode,
@@ -11,6 +12,7 @@ import {
   validateAuthFields,
 } from "@/lib/auth-form-ui";
 import { buildAuthCallbackUrl, microsoftOAuthOptions } from "@/lib/microsoft-oauth";
+import { getPostAuthRedirectPath } from "@/lib/onboarding-routing";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 
 type AuthAction = "email" | "microsoft" | null;
@@ -20,6 +22,7 @@ const passwordId = "meetiq-auth-password";
 const emailErrorId = "meetiq-auth-email-error";
 const passwordErrorId = "meetiq-auth-password-error";
 const messageId = "meetiq-auth-message";
+const postAuthContinuePath = "/auth/continue";
 export function AuthForm() {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("login");
@@ -50,7 +53,7 @@ export function AuthForm() {
                 email: email.trim(),
                 password,
                 options: {
-                  emailRedirectTo: buildAuthCallbackUrl(window.location.origin, "/onboarding"),
+                  emailRedirectTo: buildAuthCallbackUrl(window.location.origin, postAuthContinuePath),
                 },
               });
 
@@ -64,8 +67,7 @@ export function AuthForm() {
           return;
         }
 
-        router.push("/");
-        router.refresh();
+        await redirectAfterAuth();
       } finally {
         setAuthAction(null);
       }
@@ -80,7 +82,7 @@ export function AuthForm() {
       try {
         const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
           provider: "azure",
-          options: microsoftOAuthOptions(buildAuthCallbackUrl(window.location.origin, "/onboarding")),
+          options: microsoftOAuthOptions(buildAuthCallbackUrl(window.location.origin, postAuthContinuePath)),
         });
 
         if (error) {
@@ -90,6 +92,16 @@ export function AuthForm() {
         setAuthAction(null);
       }
     });
+  }
+
+  async function redirectAfterAuth() {
+    try {
+      const status = await getUserOnboardingStatus();
+      router.push(getPostAuthRedirectPath(status));
+    } catch {
+      router.push("/onboarding");
+    }
+    router.refresh();
   }
 
   function validateEmailField() {
