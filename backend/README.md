@@ -9,7 +9,8 @@ From `productivity-platform/backend`:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
+python -m pip install -r requirements.txt
+python -m pip install pytest ruff
 ```
 
 Run the API:
@@ -35,4 +36,3 @@ Internal bot endpoints require:
 ```http
 Authorization: Bearer <BOT_INTERNAL_API_KEY>
 ```
-
