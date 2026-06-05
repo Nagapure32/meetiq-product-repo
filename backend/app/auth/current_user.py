@@ -71,9 +71,7 @@ def _current_user_from_supabase_jwt(token: str) -> CurrentUser:
         raise _invalid_token()
 
     payload = _decode_json_segment(payload_segment)
-    exp = payload.get("exp")
-    if isinstance(exp, int) and datetime.now(UTC).timestamp() >= exp:
-        raise _invalid_token()
+    _validate_supabase_claims(payload)
 
     user_id = payload.get("sub")
     if not isinstance(user_id, str) or not user_id:
@@ -85,6 +83,29 @@ def _current_user_from_supabase_jwt(token: str) -> CurrentUser:
         email=email if isinstance(email, str) else None,
         auth_source="supabase",
     )
+
+
+def _validate_supabase_claims(payload: dict) -> None:
+    exp = payload.get("exp")
+    if type(exp) is not int or datetime.now(UTC).timestamp() >= exp:
+        raise _invalid_token()
+
+    aud = payload.get("aud")
+    if aud != "authenticated":
+        raise _invalid_token()
+
+    expected_issuer = _expected_supabase_issuer()
+    if expected_issuer and payload.get("iss") != expected_issuer:
+        raise _invalid_token()
+
+    user_id = payload.get("sub")
+    if not isinstance(user_id, str) or not user_id:
+        raise _invalid_token()
+
+def _expected_supabase_issuer() -> str | None:
+    if not settings.supabase_url:
+        return None
+    return f"{settings.supabase_url.rstrip('/')}/auth/v1"
 
 
 async def _current_user_from_supabase_auth_api(
