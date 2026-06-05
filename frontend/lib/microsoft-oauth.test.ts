@@ -1,4 +1,13 @@
-import { microsoftOAuthOptions } from "@/lib/microsoft-oauth";
+import {
+  buildAuthCallbackUrl,
+  microsoftOAuthOptions,
+} from "./microsoft-oauth.ts";
+
+const callbackUrl = buildAuthCallbackUrl("https://app.example", "/onboarding");
+
+if (callbackUrl !== "https://app.example/auth/callback?next=%2Fonboarding") {
+  throw new Error("Auth callback URL should preserve the post-login destination.");
+}
 
 const options = microsoftOAuthOptions("https://app.example/onboarding");
 

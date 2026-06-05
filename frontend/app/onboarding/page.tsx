@@ -8,7 +8,7 @@ import {
   getMeetingAssistantSettings,
   updateMeetingAssistantSettings,
 } from "@/lib/api";
-import { microsoftOAuthOptions } from "@/lib/microsoft-oauth";
+import { buildAuthCallbackUrl, microsoftOAuthOptions } from "@/lib/microsoft-oauth";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 import { StatusPill } from "@/components/ui";
 
@@ -43,7 +43,7 @@ export default function OnboardingPage() {
     startTransition(async () => {
       const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
         provider: "azure",
-        options: microsoftOAuthOptions(`${window.location.origin}/onboarding`),
+        options: microsoftOAuthOptions(buildAuthCallbackUrl(window.location.origin, "/onboarding")),
       });
       if (error) {
         setStatus("error");

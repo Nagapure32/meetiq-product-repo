@@ -9,7 +9,7 @@ import {
   getAuthSubmitLabel,
   validateAuthFields,
 } from "@/lib/auth-form-ui";
-import { microsoftOAuthOptions } from "@/lib/microsoft-oauth";
+import { buildAuthCallbackUrl, microsoftOAuthOptions } from "@/lib/microsoft-oauth";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 
 type AuthAction = "email" | "microsoft" | null;
@@ -51,7 +51,7 @@ export function AuthForm() {
                 email: email.trim(),
                 password,
                 options: {
-                  emailRedirectTo: `${window.location.origin}/login`,
+                  emailRedirectTo: buildAuthCallbackUrl(window.location.origin, "/onboarding"),
                 },
               });
 
@@ -81,7 +81,7 @@ export function AuthForm() {
       try {
         const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
           provider: "azure",
-          options: microsoftOAuthOptions(`${window.location.origin}/onboarding`),
+          options: microsoftOAuthOptions(buildAuthCallbackUrl(window.location.origin, "/onboarding")),
         });
 
         if (error) {
