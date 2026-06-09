@@ -20,6 +20,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -45,9 +46,10 @@ jobs:
         with:
           name: python-app
           path: |
-            backend/app
-            backend/requirements.txt
+            backend
             !antenv/
+            !backend/.pytest-deps/
+            !backend/.pytest_cache/
 
       # 🚫 Opting Out of Oryx Build
       # If you prefer to disable the Oryx build process during deployment, follow these steps:
@@ -58,6 +60,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    environment: production
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
