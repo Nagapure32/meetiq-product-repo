@@ -389,7 +389,8 @@ export async function getMeetingAssistantSettings(): Promise<MeetingAssistantSet
   });
 
   if (!response.ok) {
-    throw new Error(`Meeting assistant settings request failed: ${response.status}`);
+    const detail = await readErrorDetail(response);
+    throw new Error(detail ?? `Meeting assistant settings request failed: ${response.status}`);
   }
 
   return response.json();
@@ -407,7 +408,8 @@ export async function updateMeetingAssistantSettings(
   });
 
   if (!response.ok) {
-    throw new Error(`Meeting assistant settings update failed: ${response.status}`);
+    const detail = await readErrorDetail(response);
+    throw new Error(detail ?? `Meeting assistant settings update failed: ${response.status}`);
   }
 
   return response.json();

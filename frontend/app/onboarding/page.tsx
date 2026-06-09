@@ -74,9 +74,13 @@ export default function OnboardingPage() {
         await completeUserOnboarding();
         setStatus("enabled");
         setMessage("Calendar assistant enabled for your Microsoft calendar.");
-      } catch {
+      } catch (error) {
         setStatus("error");
-        setMessage("Could not enable the calendar assistant. Check that FastAPI is running.");
+        setMessage(
+          error instanceof Error
+            ? error.message
+            : "Could not enable the calendar assistant. Check that FastAPI is running.",
+        );
       }
     });
   }
